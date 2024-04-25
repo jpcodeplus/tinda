@@ -1,3 +1,6 @@
+let currentImgIndex = 0;
+let lastUsedNameIndex = -1;
+
 function applyDragToAllCards() {
   const cards = document.querySelectorAll(".card");
   cards.forEach((card) => dragElement(card));
@@ -114,16 +117,56 @@ function dragElement(element) {
     }, 500);
   }
 
-  function addNewCard() {
-    const cardStack = document.querySelector(".card-stack");
-    if (cardStack) {
-      const newCard = document.createElement("div");
-      newCard.className = "card";
-      newCard.textContent = "Neue Karte";
-      cardStack.appendChild(newCard);
-      dragElement(newCard); // Make the new card draggable as well
-    }
+// Globale Variablen zur Verwaltung des Bildindexes und des letzten Namens
+
+
+function addNewCard() {
+  const cardStack = document.querySelector(".card-stack");
+  if (cardStack) {
+    const newCard = document.createElement("div");
+    newCard.className = "card";
+
+    // Erstellen und Hinzufügen des card_image divs
+    const cardImage = document.createElement("div");
+    cardImage.className = "card_image";
+    const img = document.createElement("img");
+    // Bilder zyklisch durchlaufen
+    currentImgIndex = (currentImgIndex % 3) + 1;  // Erhöht den Index zyklisch: 1, 2, 3, 1, 2, 3, ...
+    img.src = `./img/example${currentImgIndex}.png`;
+    cardImage.appendChild(img);
+    newCard.appendChild(cardImage);
+
+    // Erstellen und Hinzufügen des card_content divs
+    const cardContent = document.createElement("div");
+    cardContent.className = "card_content";
+    const h3 = document.createElement("h3");
+    h3.textContent = `${getRandomName()} (${getRandomAge()})`; // Zufälliger Name und Alter
+    cardContent.appendChild(h3);
+    newCard.appendChild(cardContent);
+
+    cardStack.appendChild(newCard);
+    dragElement(newCard); // Make the new card draggable as well
   }
+}
+
+function getRandomName() {
+  const names = ["Manfred", "Sebastian", "Heiko", "Marcel", "Jürgen", "Frank", "Dieter", "Klaus", "Gerd", "Hans", "Peter", "Wolfgang", "Thomas", "Michael", "Bernd"];
+  let randomIndex;
+  do {
+    randomIndex = Math.floor(Math.random() * names.length);
+  } while (randomIndex === lastUsedNameIndex); // Verhindere die direkte Wiederholung eines Namens
+  lastUsedNameIndex = randomIndex;
+  return names[randomIndex];
+}
+
+function getRandomAge() {
+  const minAge = 18;
+  const maxAge = 72;
+  return Math.floor(Math.random() * (maxAge - minAge + 1) + minAge);
+}
+
+
+
 
   function returnToStart(element) {
     element.style.top = `${initialTop}px`;
@@ -131,6 +174,8 @@ function dragElement(element) {
     element.style.transform = "rotate(0deg)";
   }
 }
+
+
 
 // Aktiviere die Drag-Funktion für alle .card Elemente beim Laden der Seite
 window.onload = applyDragToAllCards;
