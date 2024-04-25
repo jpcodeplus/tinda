@@ -5,31 +5,41 @@ function applyDragToAllCards() {
 
 function dragElement(element) {
   let pos1 = 0,
-    pos2 = 0,
-    pos3 = 0,
-    pos4 = 0;
+      pos2 = 0,
+      pos3 = 0,
+      pos4 = 0;
   const initialTop = element.offsetTop;
   const initialLeft = element.offsetLeft;
   const threshold = element.offsetWidth * 0.6;
   let lastDirection = null;
   let currentDirection = "neutral";
 
-  element.addEventListener("mousedown", dragMouseDown);
+  // Mouse Events
+  element.addEventListener("mousedown", startDrag);
 
-  function dragMouseDown(e) {
+  // Touch Events
+  element.addEventListener("touchstart", startDrag, {passive: false});
+
+  function startDrag(e) {
     e.preventDefault();
-    pos3 = e.clientX;
-    pos4 = e.clientY;
-    document.addEventListener("mouseup", closeDragElement);
-    document.addEventListener("mousemove", elementDrag);
+    pos3 = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
+    pos4 = e.type.includes('mouse') ? e.clientY : e.touches[0].clientY;
+
+    document.addEventListener("mouseup", stopDrag);
+    document.addEventListener("mousemove", drag);
+    document.addEventListener("touchend", stopDrag);
+    document.addEventListener("touchmove", drag, {passive: false});
   }
 
-  function elementDrag(e) {
+  function drag(e) {
     e.preventDefault();
-    pos1 = pos3 - e.clientX;
-    pos2 = pos4 - e.clientY;
-    pos3 = e.clientX;
-    pos4 = e.clientY;
+    const clientX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
+    const clientY = e.type.includes('mouse') ? e.clientY : e.touches[0].clientY;
+
+    pos1 = pos3 - clientX;
+    pos2 = pos4 - clientY;
+    pos3 = clientX;
+    pos4 = clientY;
 
     element.style.top = `${element.offsetTop - pos2}px`;
     element.style.left = `${element.offsetLeft - pos1}px`;
@@ -65,9 +75,11 @@ function dragElement(element) {
     }
   }
 
-  function closeDragElement() {
-    document.removeEventListener("mouseup", closeDragElement);
-    document.removeEventListener("mousemove", elementDrag);
+  function stopDrag() {
+    document.removeEventListener("mouseup", stopDrag);
+    document.removeEventListener("mousemove", drag);
+    document.removeEventListener("touchend", stopDrag);
+    document.removeEventListener("touchmove", drag);
     handleDirection(currentDirection, element);
   }
 
