@@ -4,52 +4,131 @@ function applyDragToAllCards() {
 }
 
 function dragElement(element) {
-  let startX = 0, startY = 0;
-  let moveX = 0, moveY = 0;
+  let pos1 = 0,
+      pos2 = 0,
+      pos3 = 0,
+      pos4 = 0;
   const initialTop = element.offsetTop;
   const initialLeft = element.offsetLeft;
+  const threshold = element.offsetWidth * 0.6;
+  let lastDirection = null;
+  let currentDirection = "neutral";
 
-  element.addEventListener("mousedown", startDrag, false);
-  element.addEventListener("touchstart", startDrag, false);
+  // Mouse Events
+  element.addEventListener("mousedown", startDrag);
+
+  // Touch Events
+  element.addEventListener("touchstart", startDrag, {passive: false});
 
   function startDrag(e) {
-    if (e.type === "touchstart") {
-      startX = e.touches[0].pageX;
-      startY = e.touches[0].pageY;
-    } else { // mousedown
-      startX = e.clientX;
-      startY = e.clientY;
-    }
-    document.addEventListener("mousemove", drag, false);
-    document.addEventListener("touchmove", drag, false);
-    document.addEventListener("mouseup", stopDrag, false);
-    document.addEventListener("touchend", stopDrag, false);
+    e.preventDefault();
+    pos3 = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
+    pos4 = e.type.includes('mouse') ? e.clientY : e.touches[0].clientY;
+
+    document.addEventListener("mouseup", stopDrag);
+    document.addEventListener("mousemove", drag);
+    document.addEventListener("touchend", stopDrag);
+    document.addEventListener("touchmove", drag, {passive: false});
   }
 
   function drag(e) {
-    let clientX = startX;
-    let clientY = startY;
+    e.preventDefault();
+    const clientX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
+    const clientY = e.type.includes('mouse') ? e.clientY : e.touches[0].clientY;
 
-    if (e.type === "touchmove") {
-      clientX = e.touches[0].pageX;
-      clientY = e.touches[0].pageY;
-    } else { // mousemove
-      clientX = e.clientX;
-      clientY = e.clientY;
+    pos1 = pos3 - clientX;
+    pos2 = pos4 - clientY;
+    pos3 = clientX;
+    pos4 = clientY;
+
+    element.style.top = `${element.offsetTop - pos2}px`;
+    element.style.left = `${element.offsetLeft - pos1}px`;
+    updateTilt();
+    checkThreshold();
+  }
+
+  function updateTilt() {
+    const DEG = 18;
+    const distanceMoved = element.offsetLeft - initialLeft;
+    const maxDistance = window.innerWidth / 2;
+    const tilt = Math.max(
+      -DEG,
+      Math.min(DEG, (DEG * distanceMoved) / maxDistance)
+    );
+    element.style.transform = `rotate(${tilt}deg)`;
+  }
+
+  function checkThreshold() {
+    const distanceMoved = Math.abs(element.offsetLeft - initialLeft);
+    updateCurrentDirection(distanceMoved);
+    if (currentDirection !== lastDirection) {
+      console.log(currentDirection);
+      lastDirection = currentDirection;
     }
+  }
 
-    moveX = clientX - startX;
-    moveY = clientY - startY;
-
-    element.style.top = `${initialTop + moveY}px`;
-    element.style.left = `${initialLeft + moveX}px`;
+  function updateCurrentDirection(distanceMoved) {
+    if (distanceMoved > threshold) {
+      currentDirection = element.offsetLeft < initialLeft ? "links" : "rechts";
+    } else {
+      currentDirection = "neutral";
+    }
   }
 
   function stopDrag() {
-    document.removeEventListener("mousemove", drag, false);
-    document.removeEventListener("touchmove", drag, false);
-    document.removeEventListener("mouseup", stopDrag, false);
-    document.removeEventListener("touchend", stopDrag, false);
+    document.removeEventListener("mouseup", stopDrag);
+    document.removeEventListener("mousemove", drag);
+    document.removeEventListener("touchend", stopDrag);
+    document.removeEventListener("touchmove", drag);
+    handleDirection(currentDirection, element);
+  }
+
+  function handleDirection(direction, element) {
+    switch (direction) {
+      case "links":
+        moveElementLeft(element);
+        break;
+      case "rechts":
+        moveElementRight(element);
+        break;
+      case "neutral":
+        returnToStart(element);
+        break;
+    }
+  }
+
+  function moveElementLeft(element) {
+    animateOutOfView(element, -window.innerWidth);
+  }
+
+  function moveElementRight(element) {
+    animateOutOfView(element, window.innerWidth);
+  }
+
+  function animateOutOfView(element, endPosition) {
+    element.style.transition = "left 0.5s ease-out";
+    element.style.left = `${endPosition}px`;
+    setTimeout(() => {
+      element.parentNode.removeChild(element);
+      addNewCard();
+    }, 500);
+  }
+
+  function addNewCard() {
+    const cardStack = document.querySelector(".card-stack");
+    if (cardStack) {
+      const newCard = document.createElement("div");
+      newCard.className = "card";
+      newCard.textContent = "Neue Karte";
+      cardStack.appendChild(newCard);
+      dragElement(newCard); // Make the new card draggable as well
+    }
+  }
+
+  function returnToStart(element) {
+    element.style.top = `${initialTop}px`;
+    element.style.left = `${initialLeft}px`;
+    element.style.transform = "rotate(0deg)";
   }
 }
 
