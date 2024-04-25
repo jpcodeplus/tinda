@@ -1,3 +1,4 @@
+//copyright by JP Behrens (Code Plus Media)
 let currentImgIndex = 0;
 let lastUsedNameIndex = -1;
 let cardStatus = document.querySelector('.status')

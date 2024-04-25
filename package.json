@@ -1,0 +1,12 @@
+{
+  "name": "tinda",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "uglifyjs src/script.js --output public/main.js && sass --no-source-map --style=compressed src/style.scss public/main.css"
+  },
+  "author": "Jan Behrens",
+  "license": "ISC"
+}
