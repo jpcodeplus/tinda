@@ -1,5 +1,6 @@
 let currentImgIndex = 0;
 let lastUsedNameIndex = -1;
+let cardStatus = document.querySelector('.status')
 
 function applyDragToAllCards() {
   const cards = document.querySelectorAll(".card");
@@ -101,10 +102,14 @@ function dragElement(element) {
   }
 
   function moveElementLeft(element) {
+    cardStatus.innerText = 'Nope!'
+    cardStatus.classList.add('nope');
     animateOutOfView(element, -window.innerWidth);
   }
 
   function moveElementRight(element) {
+    cardStatus.innerText = 'Yihaa!'
+    cardStatus.classList.add('yihaa');
     animateOutOfView(element, window.innerWidth);
   }
 
@@ -112,6 +117,9 @@ function dragElement(element) {
     element.style.transition = "left 0.5s ease-out";
     element.style.left = `${endPosition}px`;
     setTimeout(() => {
+      cardStatus.innerHTML = ''
+      cardStatus.classList.remove('nope');
+      cardStatus.classList.remove('yihaa');
       element.parentNode.removeChild(element);
       addNewCard();
     }, 500);
@@ -160,13 +168,10 @@ function getRandomName() {
 }
 
 function getRandomAge() {
-  const minAge = 18;
-  const maxAge = 72;
+  const minAge = 25;
+  const maxAge = 75;
   return Math.floor(Math.random() * (maxAge - minAge + 1) + minAge);
 }
-
-
-
 
   function returnToStart(element) {
     element.style.top = `${initialTop}px`;
@@ -174,8 +179,6 @@ function getRandomAge() {
     element.style.transform = "rotate(0deg)";
   }
 }
-
-
 
 // Aktiviere die Drag-Funktion für alle .card Elemente beim Laden der Seite
 window.onload = applyDragToAllCards;

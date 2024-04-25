@@ -1,26 +1,57 @@
-*{
+* {
   box-sizing: border-box;
 }
 
 :root {
-  --card-width: 290px;
+  --card-width: 280px;
   --card-height: calc(var(--card-width) / 9 * 14.5);
   --card-content-height: 130px;
+  --color-1: #404040;
+  --color-2: #ea4e6b;
 }
 
-.body {
+body {
   min-height: 100vh;
   background: #f4f3f4;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 .app-header {
   display: flex;
   justify-content: center;
-  padding-top: 1rem;
+  align-items: center;
+  flex-direction: column;
+  padding-top: 1.5rem;
 }
 
 .logo {
   width: 11rem;
+}
+
+.logo-path-1 {
+  fill: var(--color-1);
+}
+
+.logo-path-2 {
+  fill: var(--color-2);
+}
+
+.status{
+  height: 1.5rem;
+  padding: 0 .5rem;
+  font-size: 170%;
+  font-weight: bold;
+  color: var(--color-1);
+}
+
+.nope{
+  color: var(--color-2);
+  animation: mymove .45s ;
+}
+
+.yihaa{
+  color: green;
+  animation: mymove .45s;
 }
 
 .card-stack {
@@ -29,7 +60,7 @@
   position: relative;
   max-width: calc(100vw - 4rem);
   width: var(--card-width);
-  margin: 4rem auto 0 auto;
+  margin: 1.5rem auto 0 auto;
 }
 
 .card {
@@ -38,7 +69,7 @@
   box-shadow: 0.2rem 0.2rem 0.5rem rgba(0, 0, 0, 0.3);
   position: absolute;
   border: 1px solid rgb(123, 118, 118);
-  border-radius: .5rem;
+  border-radius: 0.5rem;
   width: var(--card-width);
   height: var(--card-height);
   z-index: 90;
@@ -60,8 +91,8 @@
 
 .card_image {
   width: var(--card-width);
-  height: calc(var(--card-height) - var(--card-content-height));
-  box-shadow: 0 0 0 .1rem rgba(0, 0, 0, 0.15);
+  height: var(--card-height);
+  box-shadow: 0 0 0 0.1rem rgba(0, 0, 0, 0.15);
 }
 
 .card_image > img {
@@ -71,7 +102,23 @@
 }
 
 .card_content {
-  width: var(--card-width);
-  height: var(--card-content-height);
+  position: absolute;
+  display: block;
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0) 40%,
+    rgba(0, 0, 0, 0.7) 100%
+  );
+  padding-top: 1rem;
+  width: calc(100% - 0.25rem);
+  margin: 0.125rem;
+  border-radius: 0.25rem;
+  bottom: 0;
   text-align: center;
+  color: #fff;
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5), -2px -2px 4px rgba(0, 0, 0, 0.5);
+}
+
+@keyframes mymove {
+  50% { scale: 2;}
 }
