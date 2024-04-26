@@ -4,6 +4,11 @@
 
 Diese Dokumentation beschreibt die Funktionalität des JavaScript-Codes, der für das Drag & Drop von Karten (cards) innerhalb einer Webanwendung zuständig ist. Die Karten können nach links oder rechts gezogen werden, um eine Aktion auszuführen (z.B. Ablehnen oder Akzeptieren).
 
+## Demo
+
+Die interaktive Demo dieser Drag & Drop Funktionalität kannst du unter folgendem Link ausprobieren: [Demo-URL](https://tinda-f22wv.kinsta.page/)
+
+
 ## Funktionen
 
 ### `applyDragToAllCards()`
