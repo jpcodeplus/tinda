@@ -154,7 +154,7 @@ function addNewCard() {
     newCard.appendChild(cardContent);
 
     cardStack.appendChild(newCard);
-    dragElement(newCard); // Make the new card draggable as well
+    dragTinda(newCard); // Make the new card draggable as well
   }
 }
 
