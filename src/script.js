@@ -5,10 +5,10 @@ let cardStatus = document.querySelector('.status')
 
 function applyDragToAllCards() {
   const cards = document.querySelectorAll(".card");
-  cards.forEach((card) => dragElement(card));
+  cards.forEach((card) => dragTinda(card));
 }
 
-function dragElement(element) {
+function dragTinda(element) {
   let pos1 = 0,
       pos2 = 0,
       pos3 = 0,
